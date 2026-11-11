@@ -2,6 +2,11 @@
 package com.tradelogger.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -13,10 +18,15 @@ public class Trade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Instrument is required")
     private String instrument;
 
+    @NotBlank(message = "Direction is required")
+    @Pattern(regexp = "LONG|SHORT", message = "Direction must be LONG or SHORT")
     private String direction;
 
+    @NotNull(message = "Entry price is required")
+    @Positive(message = "Entry price must be positive")
     private BigDecimal entryPrice;
 
     private BigDecimal exitPrice;
@@ -25,8 +35,11 @@ public class Trade {
 
     private BigDecimal takeProfit;
 
+    @NotNull(message = "Quantity is required")
+    @Positive(message = "Quantity must be positive")
     private BigDecimal quantity;
 
+    @NotBlank(message = "Setup name is required")
     private String setupName;
 
     private LocalDateTime entryTime;

@@ -1,6 +1,9 @@
 
 package com.tradelogger.controller;
 
+import com.tradelogger.dto.TradeResponse;
+import com.tradelogger.dto.TradeRequest;
+import jakarta.validation.Valid;
 import com.tradelogger.entity.Trade;
 import com.tradelogger.service.TradeService;
 import org.springframework.http.ResponseEntity;
@@ -20,22 +23,32 @@ public class TradeController {
 
     // Create a new trade
     @PostMapping
-    public ResponseEntity<Trade> createTrade(@RequestBody Trade trade) {
-        return ResponseEntity.ok(tradeService.saveTrade(trade));
+    public ResponseEntity<TradeResponse> createTrade(
+            @Valid @RequestBody TradeRequest tradeRequest) {
+
+        return ResponseEntity.ok(tradeService.saveTrade(tradeRequest));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TradeResponse> updateTrade(
+            @PathVariable Long id,
+            @Valid @RequestBody TradeRequest tradeRequest) {
+
+        return ResponseEntity.ok(
+                tradeService.updateTrade(id, tradeRequest)
+        );
     }
 
     // Get all trades
     @GetMapping
-    public ResponseEntity<List<Trade>> getAllTrades() {
+    public ResponseEntity<List<TradeResponse>> getAllTrades() {
         return ResponseEntity.ok(tradeService.getAllTrades());
     }
 
     // Get trade by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Trade> getTradeById(@PathVariable Long id) {
-        return tradeService.getTradeById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TradeResponse> getTradeById(@PathVariable Long id) {
+        return ResponseEntity.ok(tradeService.getTradeById(id));
     }
 
     // Delete trade
