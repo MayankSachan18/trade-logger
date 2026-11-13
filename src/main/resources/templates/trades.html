@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Trades | Trade Logger</title>
+
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <h2>Trade Logger</h2>
+      <p>Trading Journal</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-link">Dashboard</a>
+      <a href="/#add-trade" class="nav-link">Add Trade</a>
+      <a href="/trades" class="nav-link active">All Trades</a>
+      <a href="#" class="nav-link">Analytics</a>
+      <a href="#" class="nav-link">Prop Firm Tracker</a>
+      <a href="#" class="nav-link">Settings</a>
+    </nav>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <header class="top-header">
+      <div>
+        <h1>All Trades</h1>
+        <p>Review and manage your trading history.</p>
+      </div>
+
+      <a href="/" class="add-trade-btn">Back to Dashboard</a>
+    </header>
+
+    <!-- Trades Table -->
+    <section class="dashboard-card">
+
+      <div class="trade-header">
+        <h2>Trade History</h2>
+
+        <div class="trade-controls">
+
+          <select id="instrumentFilter">
+            <option value="">All Instruments</option>
+          </select>
+
+          <select id="setupFilter">
+            <option value="">All Setups</option>
+          </select>
+
+          <select id="directionFilter">
+            <option value="">All Directions</option>
+            <option value="LONG">Long</option>
+            <option value="SHORT">Short</option>
+          </select>
+
+          <div class="date-filter">
+
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate">
+
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate">
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="table-container">
+
+        <div class="trades-table-wrapper">
+
+          <table class="trades-table">
+
+            <thead>
+            <tr>
+              <th>
+                <button class="sort-button" data-sort="entryTime">
+                  Entry Date & Time <span class="sort-icon">↕</span>
+                </button>
+              </th>
+              <th>
+                <button class="sort-button" data-sort="instrument">
+                  Instrument <span class="sort-icon">↕</span>
+                </button>
+              </th>
+              <th>
+                <button class="sort-button" data-sort="direction">
+                  Direction <span class="sort-icon">↕</span>
+                </button>
+              </th>
+              <th>
+                <button class="sort-button" data-sort="entryPrice">
+                  Entry <span class="sort-icon">↕</span>
+                </button>
+              </th>
+              <th>
+                <button class="sort-button" data-sort="exitPrice">
+                  Exit <span class="sort-icon">↕</span>
+                </button>
+              </th>
+              <th>
+                <button class="sort-button" data-sort="quantity">
+                  Quantity <span class="sort-icon">↕</span>
+                </button>
+              </th>
+              <th>
+                <button class="sort-button" data-sort="profitLoss">
+                  P&L <span class="sort-icon">↕</span>
+                </button>
+              </th>
+              <th>
+                <button class="sort-button" data-sort="setupName">
+                  Setup <span class="sort-icon">↕</span>
+                </button>
+              </th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody id="allTrades">
+            <tr>
+              <td colspan="9">Loading trades...</td>
+            </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
+        <div class="pagination-container">
+          <div class="pagination-info" id="paginationInfo">
+            Showing 0–0 of 0 trades
+          </div>
+
+          <div class="pagination-controls">
+            <button id="prevPage" class="pagination-button" disabled>
+              Previous
+            </button>
+
+            <span id="currentPage">1</span>
+
+            <button id="nextPage" class="pagination-button" disabled>
+              Next
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script th:src="@{/js/trades.js}"></script>
+
+</body>
+</html>

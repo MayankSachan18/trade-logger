@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Logger | Dashboard</title>
+
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <h2>Trade Logger</h2>
+            <span>Trading Journal</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link active">Dashboard</a>
+            <a href="#" class="nav-link"
+               onclick="document.getElementById('openTradeForm').click(); return false;">
+                Add Trade
+            </a>
+            <a href="/trades" class="nav-link">All Trades</a>
+            <a href="#" class="nav-link">Analytics</a>
+            <a href="#" class="nav-link">Prop Firm Tracker</a>
+            <a href="#" class="nav-link">Settings</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span>Trade Logger v1.0</span>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="top-header">
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>Track. Analyze. Improve.</p>
+            </div>
+
+            <div class="header-actions">
+                <select id="dateFilter">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="365">Last 1 Year</option>
+                    <option value="all">All Time</option>
+                </select>
+
+                <button class="primary-button" id="openTradeForm">
+                    + Add Trade
+                </button>
+            </div>
+
+        </header>
+
+
+        <!-- Performance Cards -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <p>Total P&L</p>
+                <h2 id="totalPnl">--</h2>
+                <span>Overall performance</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Win Rate</p>
+                <h2 id="winRate">--</h2>
+                <span>Winning trades percentage</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Total Trades</p>
+                <h2 id="totalTrades">--</h2>
+                <span>Trades recorded</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Profit Factor</p>
+                <h2 id="profitFactor">--</h2>
+                <span>Gross profit / Gross loss</span>
+            </div>
+
+        </section>
+
+
+        <!-- Charts Section -->
+        <section class="charts-grid">
+
+            <div class="dashboard-card equity-card">
+                <div class="card-header">
+                    <div>
+                        <h3>Equity Curve</h3>
+                        <p>Account performance over time</p>
+                    </div>
+                </div>
+
+                <div class="chart-placeholder">
+                    <canvas id="equityChart"></canvas>
+                </div>
+            </div>
+
+
+            <div class="dashboard-card setup-card">
+                <div class="card-header">
+                    <div>
+                        <h3>Setup Performance</h3>
+                        <p>Performance by trading setup</p>
+                    </div>
+                </div>
+
+                <div class="chart-placeholder">
+                    <canvas id="setupChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Bottom Section -->
+        <section class="bottom-grid">
+
+            <div class="dashboard-card trades-card">
+
+                <div class="card-header">
+                    <div>
+                        <h3>Recent Trades</h3>
+                        <p>Your latest trading activity</p>
+                    </div>
+
+                    <a href="#all-trades">View All</a>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Instrument</th>
+                            <th>Direction</th>
+                            <th>Entry</th>
+                            <th>Exit</th>
+                            <th>P&L</th>
+                            <th>Setup</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="recentTrades">
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                No trades recorded yet.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card monthly-card">
+
+                <div class="card-header">
+                    <div>
+                        <h3>Monthly Performance</h3>
+                        <p>Monthly profit and loss</p>
+                    </div>
+                </div>
+
+                <div class="chart-placeholder">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Add Trade Modal -->
+        <div class="modal hidden" id="tradeModal">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <div>
+                        <h2>Add New Trade</h2>
+                        <p>Record your trading activity</p>
+                    </div>
+
+                    <button type="button" class="close-button"
+                            id="closeTradeForm">&times;</button>
+                </div>
+
+                <form id="tradeForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="instrument">Instrument *</label>
+                            <input type="text" id="instrument"
+                                   placeholder="e.g. NQ, ES, XAUUSD" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="direction">Direction *</label>
+                            <select id="direction" required>
+                                <option value="">Select Direction</option>
+                                <option value="LONG">Long</option>
+                                <option value="SHORT">Short</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="entryPrice">Entry Price *</label>
+                            <input type="number" id="entryPrice"
+                                   step="any" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exitPrice">Exit Price</label>
+                            <input type="number" id="exitPrice" step="any">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stopLoss">Stop Loss</label>
+                            <input type="number" id="stopLoss" step="any">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="takeProfit">Take Profit</label>
+                            <input type="number" id="takeProfit" step="any">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity">Quantity *</label>
+                            <input type="number" id="quantity"
+                                   step="any" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="setupName">Trading Setup *</label>
+                            <input type="text" id="setupName"
+                                   placeholder="e.g. Liquidity Sweep" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="entryTime">Entry Date & Time</label>
+                            <input type="datetime-local" id="entryTime">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exitTime">Exit Date & Time</label>
+                            <input type="datetime-local" id="exitTime">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profitLoss">Profit / Loss ($)</label>
+                            <input type="number" id="profitLoss" step="any">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="riskReward">Risk : Reward</label>
+                            <input type="number" id="riskReward" step="any">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tradingSession">Trading Session</label>
+                            <select id="tradingSession">
+                                <option value="">Select Session</option>
+                                <option value="Asia">Asia</option>
+                                <option value="London">London</option>
+                                <option value="New York">New York</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Trade Notes</label>
+                        <textarea id="notes" rows="3"
+                                  placeholder="Describe your trade..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="cancel-button"
+                                id="cancelTradeForm">Cancel</button>
+
+                        <button type="submit" class="primary-button">
+                            Save Trade
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </main>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>
