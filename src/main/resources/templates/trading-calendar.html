@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Performance | Trade Logger</title>
+
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <h2>Trade Logger</h2>
+      <p>Trading Journal</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-link">Dashboard</a>
+      <a href="/?addTrade=true" class="nav-link">Add Trade</a>
+      <a href="/trades" class="nav-link">Trade History</a>
+      <a href="/calendar" class="nav-link active">Trading Calendar</a>
+
+      <div class="nav-section">
+        <a href="/analytics/setup-performance" class="nav-link">
+          Analytics
+        </a>
+
+        <div class="nav-submenu">
+          <a href="/analytics/setup-performance" class="nav-sublink">
+            Setup Performance
+          </a>
+
+          <a href="/analytics/instrument-analysis" class="nav-sublink">
+            Instrument Analysis
+          </a>
+        </div>
+      </div>
+
+      <a href="/prop-firm-tracker" class="nav-link active">Prop Firm Tracker</a>
+      <a href="/settings" class="nav-link">Settings</a>
+    </nav>
+
+  </aside>
+
+  <!-- Main Content -->
+
+  <main class="main-content">
+
+    <!-- Page Header -->
+    <header class="topbar">
+      <div>
+        <h1>Trading Calendar</h1>
+        <p>Track your daily trading performance</p>
+      </div>
+    </header>
+
+    <!-- Monthly Performance Summary -->
+    <section class="stats-grid calendar-stats-grid">
+
+      <div class="stat-card">
+        <p>Monthly P&L</p>
+        <h2 id="monthlyTotalPnl">$0.00</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Total Trades</p>
+        <h2 id="monthlyTotalTrades">0</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Win Rate</p>
+        <h2 id="monthlyWinRate">0%</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Winning Days</p>
+        <h2 id="monthlyWinningDays">0</h2>
+      </div>
+
+    </section>
+
+    <!-- Trading Calendar -->
+    <section class="trading-calendar-section">
+
+      <!-- Calendar Header -->
+      <div class="calendar-header">
+
+        <div class="calendar-title">
+          <h2>TRADING CALENDAR</h2>
+
+          <div class="calendar-tab">
+            <button class="calendar-tab-button active"
+                    id="pnlTab">
+              PNL
+            </button>
+          </div>
+        </div>
+
+        <!-- Month Navigation -->
+        <div class="calendar-navigation">
+
+          <button id="previousMonth" class="month-nav-button">
+            &#8592;
+          </button>
+
+          <h2 id="currentMonth">November 2026</h2>
+
+          <button id="nextMonth" class="month-nav-button">
+            &#8594;
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Week Days -->
+      <div class="calendar-weekdays">
+        <div>SUN</div>
+        <div>MON</div>
+        <div>TUE</div>
+        <div>WED</div>
+        <div>THU</div>
+        <div>FRI</div>
+        <div>SAT</div>
+      </div>
+
+      <!-- Calendar Days -->
+      <div class="calendar-grid" id="calendarGrid">
+
+        <!-- Calendar days will be generated using JavaScript -->
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+</div>
+
+<script th:src="@{/js/trading-calendar.js}"></script>
+</body>
+</html>

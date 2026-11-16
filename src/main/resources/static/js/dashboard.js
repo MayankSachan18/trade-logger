@@ -358,8 +358,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const tradeModal = document.getElementById("tradeModal");
     const tradeForm = document.getElementById("tradeForm");
 
-    // Open Add Trade modal
-    document.getElementById("openTradeForm").addEventListener("click", () => {
+    // Open Add Trade modal globally
+    window.openTradeForm = function () {
 
         editingTradeId = null;
 
@@ -368,6 +368,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector(".modal-header h2").textContent = "Add New Trade";
 
         tradeModal.classList.remove("hidden");
+    };
+
+    // Dashboard Add Trade button
+    document.getElementById("openTradeForm").addEventListener("click", () => {
+        window.openTradeForm();
     });
 
     // Close modal
@@ -524,11 +529,22 @@ document.addEventListener("DOMContentLoaded", () => {
             alert(error.message);
         }
     };
-    // Open edit modal when arriving from All Trades page
-    const editTradeIdFromUrl = new URLSearchParams(window.location.search).get("editTrade");
+    // Handle Add Trade and Edit Trade navigation
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const editTradeIdFromUrl = urlParams.get("editTrade");
+    const addTradeFromUrl = urlParams.get("addTrade");
 
     if (editTradeIdFromUrl) {
+
         window.editTrade(Number(editTradeIdFromUrl));
+
+        window.history.replaceState({}, document.title, "/");
+
+    } else if (addTradeFromUrl === "true") {
+
+        window.openTradeForm();
+
         window.history.replaceState({}, document.title, "/");
     }
 });

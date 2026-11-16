@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Performance | Trade Logger</title>
+
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <h2>Trade Logger</h2>
+      <p>Trading Journal</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-link">Dashboard</a>
+      <a href="/?addTrade=true" class="nav-link">Add Trade</a>
+      <a href="/trades" class="nav-link">Trade History</a>
+      <a href="/calendar" class="nav-link">Trading Calendar</a>
+
+      <div class="nav-section">
+        <a href="/analytics/setup-performance" class="nav-link active">
+          Analytics
+        </a>
+
+        <div class="nav-submenu">
+          <a href="/analytics/setup-performance" class="nav-sublink active">
+            Setup Performance
+          </a>
+
+          <a href="/analytics/instrument-analysis" class="nav-sublink">
+            Instrument Analysis
+          </a>
+        </div>
+      </div>
+
+      <a href="/prop-firm-tracker" class="nav-link">Prop Firm Tracker</a>
+      <a href="/settings" class="nav-link">Settings</a>
+    </nav>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>Setup Performance</h1>
+        <p>Analyze your trading setups across all instruments</p>
+      </div>
+    </header>
+
+    <!-- Filters -->
+    <section class="filters-section">
+      <h3>Filters</h3>
+
+      <div class="filters-container">
+        <select id="instrumentFilter">
+          <option value="">All Instruments</option>
+        </select>
+
+        <select id="setupFilter">
+          <option value="">All Setups</option>
+        </select>
+
+        <select id="directionFilter">
+          <option value="">All Directions</option>
+          <option value="LONG">Long</option>
+          <option value="SHORT">Short</option>
+        </select>
+
+        <input type="date" id="startDate">
+        <input type="date" id="endDate">
+
+        <button id="applyFilters">Apply Filters</button>
+        <button id="resetFilters">Reset</button>
+      </div>
+    </section>
+
+    <!-- KPI Cards -->
+    <section class="stats-grid">
+
+      <div class="stat-card">
+        <p>Total Trades</p>
+        <h2 id="totalTrades">0</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Win Rate</p>
+        <h2 id="winRate">0%</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Net P&L</p>
+        <h2 id="netPnl">$0.00</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Profit Factor</p>
+        <h2 id="profitFactor">0.00</h2>
+      </div>
+
+    </section>
+
+    <!-- Setup Performance Table -->
+    <section class="table-section">
+      <h2>Setup Performance – All Instruments</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Setup</th>
+            <th>Trades</th>
+            <th>Win %</th>
+            <th>Loss %</th>
+            <th>Net P&L</th>
+            <th>Average R:R</th>
+            <th>Profit Factor</th>
+          </tr>
+          </thead>
+
+          <tbody id="setupPerformanceTable">
+          <tr>
+            <td colspan="7">Loading setup performance...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Setup Performance Trend -->
+    <section class="chart-section">
+      <h2>Setup Performance Trend</h2>
+      <canvas id="setupPerformanceTrend"></canvas>
+    </section>
+
+    <!-- Overall Win/Loss Distribution -->
+    <section class="chart-section">
+      <h2>Overall Win/Loss Distribution</h2>
+      <canvas id="winLossDistribution"></canvas>
+    </section>
+
+
+    <!-- Best vs Worst Setup -->
+    <section class="best-worst-section">
+
+      <h2>Best vs Worst Setup</h2>
+
+      <div class="best-worst-grid">
+
+        <!-- Best Setup -->
+        <div class="setup-highlight-card best-setup-card">
+
+          <p class="setup-highlight-label">Best Performing Setup</p>
+
+          <h3 id="bestSetupName">—</h3>
+
+          <div class="setup-highlight-pnl" id="bestSetupPnl">
+            —
+          </div>
+
+          <div class="setup-highlight-details">
+            <div>
+              <span>Trades</span>
+              <strong id="bestSetupTrades">—</strong>
+            </div>
+
+            <div>
+              <span>Win Rate</span>
+              <strong id="bestSetupWinRate">—</strong>
+            </div>
+
+            <div>
+              <span>Profit Factor</span>
+              <strong id="bestSetupProfitFactor">—</strong>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Worst Setup -->
+        <div class="setup-highlight-card worst-setup-card">
+
+          <p class="setup-highlight-label">Weakest Performing Setup</p>
+
+          <h3 id="worstSetupName">—</h3>
+
+          <div class="setup-highlight-pnl" id="worstSetupPnl">
+            —
+          </div>
+
+          <div class="setup-highlight-details">
+            <div>
+              <span>Trades</span>
+              <strong id="worstSetupTrades">—</strong>
+            </div>
+
+            <div>
+              <span>Win Rate</span>
+              <strong id="worstSetupWinRate">—</strong>
+            </div>
+
+            <div>
+              <span>Profit Factor</span>
+              <strong id="worstSetupProfitFactor">—</strong>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Detailed Setup Metrics -->
+    <section class="table-section">
+      <h2>Detailed Setup Metrics</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Setup</th>
+            <th>Trades</th>
+            <th>Average Winner</th>
+            <th>Average Loser</th>
+            <th>Average R:R</th>
+            <th>Net P&L</th>
+            <th>Profit Factor</th>
+            <th>Max Consecutive Losses</th>
+          </tr>
+          </thead>
+
+          <tbody id="detailedSetupMetrics">
+          <tr>
+            <td colspan="8">Loading detailed metrics...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- Setup Performance by Instrument -->
+    <section class="table-section">
+      <h2>Setup Performance by Instrument</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Setup</th>
+            <th>Instrument</th>
+            <th>Trades</th>
+            <th>Win %</th>
+            <th>Loss %</th>
+            <th>Net P&L</th>
+            <th>Average R:R</th>
+            <th>Profit Factor</th>
+          </tr>
+          </thead>
+
+          <tbody id="setupInstrumentTable">
+          <tr>
+            <td colspan="8">Loading instrument performance...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Top Instruments by Setup -->
+    <section class="table-section">
+      <h2>Top Instruments by Setup</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Setup</th>
+            <th>Top Instrument</th>
+            <th>Trades</th>
+            <th>Win Rate</th>
+            <th>Net P&L</th>
+            <th>Profit Factor</th>
+          </tr>
+          </thead>
+
+          <tbody id="topInstrumentsBySetup">
+          <tr>
+            <td colspan="6">Loading top instruments...</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:src="@{/js/setup-performance.js}"></script>
+</body>
+</html>

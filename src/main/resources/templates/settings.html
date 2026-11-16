@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Performance | Trade Logger</title>
+
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <h2>Trade Logger</h2>
+      <p>Trading Journal</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-link">Dashboard</a>
+      <a href="/?addTrade=true" class="nav-link">Add Trade</a>
+      <a href="/trades" class="nav-link">Trade History</a>
+      <a href="/calendar" class="nav-link">Trading Calendar</a>
+
+      <div class="nav-section">
+        <a href="/analytics/setup-performance" class="nav-link">
+          Analytics
+        </a>
+
+        <div class="nav-submenu">
+          <a href="/analytics/setup-performance" class="nav-sublink">
+            Setup Performance
+          </a>
+
+          <a href="/analytics/instrument-analysis" class="nav-sublink">
+            Instrument Analysis
+          </a>
+        </div>
+      </div>
+
+      <a href="/prop-firm-tracker" class="nav-link">Prop Firm Tracker</a>
+      <a href="/settings" class="nav-link active">Settings</a>
+    </nav>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <header class="topbar">
+      <div>
+        <h1>Settings</h1>
+        <p>Manage your Trade Logger preferences and application settings</p>
+      </div>
+    </header>
+
+    <section class="work-in-progress">
+
+      <div class="work-in-progress-content">
+
+        <div class="work-in-progress-icon">
+          <span>⚙️</span>
+        </div>
+
+        <h2>Work in Progress</h2>
+
+        <p>
+          We're working on the Settings page.
+          Soon you'll be able to manage your profile,
+          trading preferences, display options and application settings.
+        </p>
+
+        <span class="work-in-progress-label">COMING SOON</span>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+</div>
+
+<script th:src="@{/js/trading-calendar.js}"></script>
+</body>
+</html>

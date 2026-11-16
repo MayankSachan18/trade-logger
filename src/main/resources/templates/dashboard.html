@@ -14,31 +14,41 @@
 <div class="dashboard-container">
 
     <!-- Sidebar -->
+
     <aside class="sidebar">
 
-        <div class="brand">
+        <div class="logo">
             <h2>Trade Logger</h2>
-            <span>Trading Journal</span>
+            <p>Trading Journal</p>
         </div>
 
         <nav class="sidebar-nav">
             <a href="/" class="nav-link active">Dashboard</a>
-            <a href="#" class="nav-link"
-               onclick="document.getElementById('openTradeForm').click(); return false;">
-                Add Trade
-            </a>
-            <a href="/trades" class="nav-link">All Trades</a>
-            <a href="#" class="nav-link">Analytics</a>
-            <a href="#" class="nav-link">Prop Firm Tracker</a>
-            <a href="#" class="nav-link">Settings</a>
+            <a href="/?addTrade=true" class="nav-link">Add Trade</a>
+            <a href="/trades" class="nav-link">Trade History</a>
+            <a href="/calendar" class="nav-link">Trading Calendar</a>
+
+            <div class="nav-section">
+                <a href="/analytics/setup-performance" class="nav-link">
+                    Analytics
+                </a>
+
+                <div class="nav-submenu">
+                    <a href="/analytics/setup-performance" class="nav-sublink">
+                        Setup Performance
+                    </a>
+
+                    <a href="/analytics/instrument-analysis" class="nav-sublink">
+                        Instrument Analysis
+                    </a>
+                </div>
+            </div>
+
+            <a href="/prop-firm-tracker" class="nav-link">Prop Firm Tracker</a>
+            <a href="/settings" class="nav-link">Settings</a>
         </nav>
 
-        <div class="sidebar-footer">
-            <span>Trade Logger v1.0</span>
-        </div>
-
     </aside>
-
 
     <!-- Main Content -->
     <main class="main-content">
