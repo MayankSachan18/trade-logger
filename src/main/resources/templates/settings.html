@@ -1,91 +1,331 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Setup Performance | Trade Logger</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings | Trade Logger</title>
 
-  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
 
 <body>
 
 <div class="dashboard-container">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar">
 
-    <div class="logo">
-      <h2>Trade Logger</h2>
-      <p>Trading Journal</p>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="/" class="nav-link">Dashboard</a>
-      <a href="/?addTrade=true" class="nav-link">Add Trade</a>
-      <a href="/trades" class="nav-link">Trade History</a>
-      <a href="/calendar" class="nav-link">Trading Calendar</a>
-
-      <div class="nav-section">
-        <a href="/analytics/setup-performance" class="nav-link">
-          Analytics
-        </a>
-
-        <div class="nav-submenu">
-          <a href="/analytics/setup-performance" class="nav-sublink">
-            Setup Performance
-          </a>
-
-          <a href="/analytics/instrument-analysis" class="nav-sublink">
-            Instrument Analysis
-          </a>
-        </div>
-      </div>
-
-      <a href="/prop-firm-tracker" class="nav-link">Prop Firm Tracker</a>
-      <a href="/settings" class="nav-link active">Settings</a>
-    </nav>
-
-  </aside>
-
-  <!-- Main Content -->
-  <main class="main-content">
-
-    <header class="topbar">
-      <div>
-        <h1>Settings</h1>
-        <p>Manage your Trade Logger preferences and application settings</p>
-      </div>
-    </header>
-
-    <section class="work-in-progress">
-
-      <div class="work-in-progress-content">
-
-        <div class="work-in-progress-icon">
-          <span>⚙️</span>
+        <div class="logo">
+            <h2>Trade Logger</h2>
+            <p>Trading Journal</p>
         </div>
 
-        <h2>Work in Progress</h2>
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/?addTrade=true" class="nav-link">Add Trade</a>
+            <a href="/trades" class="nav-link">Trade History</a>
+            <a href="/calendar" class="nav-link">Trading Calendar</a>
 
-        <p>
-          We're working on the Settings page.
-          Soon you'll be able to manage your profile,
-          trading preferences, display options and application settings.
-        </p>
+            <div class="nav-section">
+                <a href="/analytics/setup-performance" class="nav-link">
+                    Analytics
+                </a>
 
-        <span class="work-in-progress-label">COMING SOON</span>
+                <div class="nav-submenu">
+                    <a href="/analytics/setup-performance" class="nav-sublink">
+                        Setup Performance
+                    </a>
 
-      </div>
+                    <a href="/analytics/instrument-analysis" class="nav-sublink">
+                        Instrument Analysis
+                    </a>
+                </div>
+            </div>
 
-    </section>
+            <a href="/prop-firm-tracker" class="nav-link">Prop Firm Tracker</a>
+            <a href="/settings" class="nav-link active">Settings</a>
+        </nav>
 
-  </main>
+    </aside>
 
+    <!-- Main Content -->
+    <main class="main-content settings-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Account Settings</h1>
+                <p>Manage your account information and security</p>
+            </div>
+        </header>
+
+        <!-- Profile Overview -->
+        <section class="settings-profile-card">
+
+            <div class="settings-avatar" id="profileAvatar">T</div>
+
+            <div class="settings-profile-info">
+                <h2 id="profileUsername">Loading...</h2>
+                <p id="profileEmail">Loading...</p>
+
+                <span class="account-status">
+                    <span class="status-dot"></span>
+                    Active Account
+                </span>
+            </div>
+
+            <div class="profile-created">
+                <span>ACCOUNT CREATED</span>
+                <strong id="profileCreated">Loading...</strong>
+            </div>
+
+        </section>
+
+        <!-- Account Information -->
+        <section class="settings-card">
+
+            <div class="settings-card-header">
+                <div class="settings-card-icon">▤</div>
+
+                <div>
+                    <h2>Account Information</h2>
+                    <p>Your account details at a glance</p>
+                </div>
+            </div>
+
+            <div class="settings-info-grid">
+
+                <div class="settings-info-item">
+                    <span>Username</span>
+                    <strong id="accountUsername">Loading...</strong>
+                </div>
+
+                <div class="settings-info-item">
+                    <span>Email Address</span>
+                    <strong id="accountEmail">Loading...</strong>
+                </div>
+
+                <div class="settings-info-item">
+                    <span>Account Created</span>
+                    <strong id="accountCreated">Loading...</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Security Settings -->
+        <section class="settings-card">
+
+            <div class="settings-card-header">
+                <div class="settings-card-icon">♙</div>
+
+                <div>
+                    <h2>Security Settings</h2>
+                    <p>Keep your account secure</p>
+                </div>
+            </div>
+
+            <div class="settings-security-grid">
+
+                <!-- Change Password -->
+                <div class="security-item">
+
+                    <div class="security-icon">🔒</div>
+
+                    <div class="security-description">
+                        <h3>Change Password</h3>
+                        <p>Update your password regularly</p>
+                    </div>
+
+                    <button
+                            type="button"
+                            class="security-button"
+                            id="changePasswordBtn">
+                        Change Password
+                    </button>
+
+                </div>
+
+                <!-- Logout -->
+                <div class="security-item logout-item">
+
+                    <div class="security-icon logout-icon">↪</div>
+
+                    <div class="security-description">
+                        <h3>Logout</h3>
+                        <p>Sign out from your account</p>
+                    </div>
+
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="logout-button">
+                            Logout
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Change Password Modal -->
+        <div class="password-modal-overlay" id="passwordModal">
+
+            <div class="password-modal">
+
+                <div class="password-modal-header">
+
+                    <div>
+                        <h2>Change Password</h2>
+                        <p>Update your account password securely</p>
+                    </div>
+
+                    <button
+                            type="button"
+                            class="modal-close"
+                            id="closePasswordModal">
+                        &times;
+                    </button>
+
+                </div>
+
+                <form id="changePasswordForm">
+
+                    <!-- Current Password -->
+                    <div class="password-field">
+
+                        <label for="currentPassword">
+                            Current Password
+                        </label>
+
+                        <div class="password-input-wrapper">
+
+                            <input
+                                    type="password"
+                                    id="currentPassword"
+                                    placeholder="Enter current password"
+                                    required>
+
+                            <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="currentPassword"
+                                    aria-label="Show password">
+
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- New Password -->
+                    <div class="password-field">
+
+                        <label for="newPassword">
+                            New Password
+                        </label>
+
+                        <div class="password-input-wrapper">
+
+                            <input
+                                    type="password"
+                                    id="newPassword"
+                                    placeholder="Enter new password"
+                                    minlength="8"
+                                    required>
+
+                            <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="newPassword"
+                                    aria-label="Show password">
+
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="password-field">
+
+                        <label for="confirmPassword">
+                            Confirm New Password
+                        </label>
+
+                        <div class="password-input-wrapper">
+
+                            <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    placeholder="Confirm new password"
+                                    minlength="8"
+                                    required>
+
+                            <button
+                                    type="button"
+                                    class="toggle-password"
+                                    data-target="confirmPassword"
+                                    aria-label="Show password">
+
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <p id="passwordMessage" class="password-message"></p>
+
+                    <!-- Modal Actions -->
+                    <div class="password-modal-actions">
+
+                        <button
+                                type="button"
+                                class="modal-cancel"
+                                id="cancelPasswordModal">
+                            Cancel
+                        </button>
+
+                        <button
+                                type="submit"
+                                class="modal-submit"
+                                id="submitPasswordBtn">
+                            Update Password
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
 
 </div>
 
-<script th:src="@{/js/trading-calendar.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/settings.js}"></script>
+
 </body>
 </html>
