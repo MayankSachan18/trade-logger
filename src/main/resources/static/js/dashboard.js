@@ -6,6 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const API_URL = "/api/trades";
 
+    function getCsrfHeaders() {
+        const token = document.querySelector('meta[name="_csrf"]')?.content;
+        const header = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+        return token && header ? { [header]: token } : {};
+    }
+
     // Fetch trades from Spring Boot API
     async function fetchTrades() {
         try {
@@ -471,7 +478,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 editingTradeId ? `${API_URL}/${editingTradeId}` : API_URL,
                 {
                     method: editingTradeId ? "PUT" : "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...getCsrfHeaders()
+                    },
                     body: JSON.stringify(tradeData)
                 }
             );
@@ -514,7 +524,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const response = await fetch(`${API_URL}/${id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: {
+                    ...getCsrfHeaders()
+                }
             });
 
             if (!response.ok) {

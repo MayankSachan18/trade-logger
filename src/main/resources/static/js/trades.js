@@ -3,6 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const API_URL = "/api/trades";
 
+    function getCsrfHeaders() {
+        const token = document.querySelector('meta[name="_csrf"]')?.content;
+        const header = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+        return token && header ? { [header]: token } : {};
+    }
+
     let allTrades = [];
 
     let currentPage = 1;
@@ -215,7 +222,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const response = await fetch(`${API_URL}/${id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: {
+                    ...getCsrfHeaders()
+                }
             });
 
             if (!response.ok) {

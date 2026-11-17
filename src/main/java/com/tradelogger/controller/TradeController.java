@@ -4,7 +4,6 @@ package com.tradelogger.controller;
 import com.tradelogger.dto.TradeResponse;
 import com.tradelogger.dto.TradeRequest;
 import jakarta.validation.Valid;
-import com.tradelogger.entity.Trade;
 import com.tradelogger.service.TradeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Trade Logger</title>
+  <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+
+<div class="auth-container">
+
+  <div class="auth-card">
+
+    <div class="auth-header">
+      <h1>Trade Logger</h1>
+      <p>Welcome back! Sign in to continue.</p>
+    </div>
+
+    <div th:if="${param.error}" class="alert error">
+      Invalid username or password.
+    </div>
+
+    <div th:if="${param.logout}" class="alert success">
+      You have been logged out successfully.
+    </div>
+
+    <div th:if="${success}" class="alert success" th:text="${success}"></div>
+
+    <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+    <form th:action="@{/login}" method="post">
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                required
+                autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required>
+      </div>
+
+      <button type="submit" class="auth-button">
+        Sign In
+      </button>
+
+    </form>
+
+    <div class="auth-footer">
+      Don't have an account?
+      <a th:href="@{/register}">Create Account</a>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

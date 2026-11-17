@@ -1,29 +1,51 @@
 
 package com.tradelogger.service;
 
+import com.tradelogger.dto.TradeRequest;
 import com.tradelogger.dto.TradeResponse;
 import com.tradelogger.entity.Trade;
-import com.tradelogger.dto.TradeRequest;
+import com.tradelogger.entity.User;
 import com.tradelogger.exception.ResourceNotFoundException;
 import com.tradelogger.repository.TradeRepository;
+import com.tradelogger.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TradeService {
 
     private final TradeRepository tradeRepository;
+    private final UserRepository userRepository;
 
-    public TradeService(TradeRepository tradeRepository) {
+    public TradeService(
+            TradeRepository tradeRepository,
+            UserRepository userRepository) {
         this.tradeRepository = tradeRepository;
+        this.userRepository = userRepository;
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Authenticated user not found"
+                ));
     }
 
     public TradeResponse saveTrade(TradeRequest request) {
 
+        User currentUser = getCurrentUser();
+
         Trade trade = new Trade();
 
+        trade.setUser(currentUser);
         trade.setInstrument(request.getInstrument());
         trade.setDirection(request.getDirection());
         trade.setEntryPrice(request.getEntryPrice());
@@ -46,7 +68,10 @@ public class TradeService {
 
     public TradeResponse updateTrade(Long id, TradeRequest request) {
 
-        Trade existingTrade = tradeRepository.findById(id)
+        User currentUser = getCurrentUser();
+
+        Trade existingTrade = tradeRepository
+                .findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trade not found with ID: " + id
                 ));
@@ -70,15 +95,23 @@ public class TradeService {
 
         return convertToResponse(savedTrade);
     }
+
     public List<TradeResponse> getAllTrades() {
-        return tradeRepository.findAll()
+
+        User currentUser = getCurrentUser();
+
+        return tradeRepository.findAllByUserId(currentUser.getId())
                 .stream()
                 .map(this::convertToResponse)
                 .toList();
     }
 
     public TradeResponse getTradeById(Long id) {
-        Trade trade = tradeRepository.findById(id)
+
+        User currentUser = getCurrentUser();
+
+        Trade trade = tradeRepository
+                .findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trade not found with ID: " + id
                 ));
@@ -87,7 +120,11 @@ public class TradeService {
     }
 
     public void deleteTrade(Long id) {
-        Trade trade = tradeRepository.findById(id)
+
+        User currentUser = getCurrentUser();
+
+        Trade trade = tradeRepository
+                .findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Trade not found with ID: " + id
                 ));
