@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback | Trade Logger</title>
+
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+
+    <style>
+        .feedback-page {
+            width: 100%;
+            max-width: 1500px;
+        }
+
+        .feedback-layout {
+            display: grid;
+            grid-template-columns: minmax(300px, 0.85fr) minmax(400px, 1.4fr);
+            gap: 25px;
+            margin-top: 25px;
+            align-items: start;
+        }
+
+        .feedback-card {
+            background: var(--card-bg, #ffffff);
+            border-radius: 14px;
+            padding: 25px;
+            border: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .feedback-card h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .feedback-description {
+            color: var(--text-secondary, #888);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .feedback-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feedback-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .feedback-form label,
+        .reply-form label {
+            font-weight: 500;
+        }
+
+        .feedback-form select,
+        .feedback-form textarea,
+        .reply-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color, #ddd);
+            background: var(--input-bg, transparent);
+            color: var(--text-primary, inherit);
+            font: inherit;
+        }
+
+        .feedback-form textarea,
+        .reply-form textarea {
+            resize: vertical;
+        }
+
+        .rating-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .rating-option {
+            cursor: pointer;
+        }
+
+        .rating-option input {
+            display: none;
+        }
+
+        .rating-option span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border-color, #ccc);
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .rating-option input:checked + span {
+            border-color: #818cf8;
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+        }
+
+        .feedback-submit {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .feed-header h2 {
+            margin: 0;
+        }
+
+        .feedback-filter {
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color, #ddd);
+            background: var(--input-bg, transparent);
+            color: var(--text-primary, inherit);
+        }
+
+        .feedback-post {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .feedback-post:first-child {
+            padding-top: 5px;
+        }
+
+        .feedback-post:last-child {
+            border-bottom: none;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .author-name {
+            font-weight: 600;
+        }
+
+        .post-date {
+            color: var(--text-secondary, #888);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.12);
+            color: #818cf8;
+            white-space: nowrap;
+        }
+
+        .category-tag.bug {
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+        }
+
+        .category-tag.general {
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+        }
+
+        .post-rating {
+            color: #f59e0b;
+            font-size: 15px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .post-message {
+            line-height: 1.7;
+            font-size: 14px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin-bottom: 18px;
+        }
+
+        .replies-section {
+            margin-left: 15px;
+            padding-left: 18px;
+            border-left: 2px solid var(--border-color, #ddd);
+        }
+
+        .replies-heading {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .reply-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .reply-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.18);
+            color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .reply-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .reply-author {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .reply-date {
+            font-size: 11px;
+            color: var(--text-secondary, #888);
+            margin-left: 7px;
+            font-weight: 400;
+        }
+
+        .reply-message {
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 5px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .reply-form {
+            margin-top: 16px;
+        }
+
+        .reply-form textarea {
+            min-height: 65px;
+            font-size: 13px;
+        }
+
+        .reply-button {
+            margin-top: 9px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 7px;
+            background: #6366f1;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .reply-button:hover {
+            background: #4f46e5;
+        }
+
+        .success-message {
+            padding: 13px 16px;
+            margin-top: 20px;
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            font-size: 14px;
+        }
+
+        .empty-feedback {
+            text-align: center;
+            padding: 45px 15px;
+            color: var(--text-secondary, #888);
+        }
+
+        .empty-feedback h3 {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 1000px) {
+            .feedback-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .feedback-card {
+                padding: 17px;
+            }
+
+            .post-header {
+                flex-wrap: wrap;
+            }
+
+            .replies-section {
+                margin-left: 5px;
+                padding-left: 12px;
+            }
+        }
+
+        /* Improve text contrast inside white feedback cards */
+        .feedback-card {
+            color: #1e293b;
+        }
+
+        .feedback-card h1,
+        .feedback-card h2,
+        .feedback-card h3,
+        .feedback-card h4,
+        .feedback-card p,
+        .feedback-card label,
+        .feedback-card span,
+        .feedback-card small,
+        .feedback-card .feedback-description {
+            color: #1e293b;
+        }
+
+        .feedback-card .feedback-meta {
+            color: #64748b;
+        }
+
+        .feedback-card textarea,
+        .feedback-card input,
+        .feedback-card select {
+            color: #1e293b;
+            background-color: #ffffff;
+        }
+
+        .feedback-card textarea::placeholder,
+        .feedback-card input::placeholder {
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>Trade Logger</h2>
+            <p>Trading Journal</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/?addTrade=true" class="nav-link">Add Trade</a>
+            <a href="/trades" class="nav-link">Trade History</a>
+            <a href="/calendar" class="nav-link">Trading Calendar</a>
+
+            <div class="nav-section">
+                <a href="/analytics/setup-performance" class="nav-link">
+                    Analytics
+                </a>
+
+                <div class="nav-submenu">
+                    <a href="/analytics/setup-performance" class="nav-sublink">
+                        Setup Performance
+                    </a>
+
+                    <a href="/analytics/instrument-analysis" class="nav-sublink">
+                        Instrument Analysis
+                    </a>
+                </div>
+            </div>
+
+            <a href="/prop-firm-tracker" class="nav-link">Prop Firm Tracker</a>
+            <a href="/feedback" class="nav-link active">Feedback</a>
+            <a href="/settings" class="nav-link">Settings</a>
+        </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="top-header">
+            <div>
+                <h1>Feedback</h1>
+                <p>Share ideas, discuss improvements and help us grow together.</p>
+            </div>
+        </header>
+
+        <div class="feedback-page">
+
+            <!-- Success Message -->
+            <div class="success-message"
+                 th:if="${successMessage != null}"
+                 th:text="${successMessage}">
+            </div>
+
+            <div class="feedback-layout">
+
+                <!-- LEFT: Feedback Form -->
+                <section class="dashboard-card feedback-card">
+
+                    <h2>Share Your Feedback</h2>
+
+                    <p class="feedback-description">
+                        Have an idea, found a bug, or want to share your experience?
+                        We'd love to hear from you.
+                    </p>
+
+                    <form class="feedback-form"
+                          th:action="@{/feedback}"
+                          method="post">
+
+                        <div class="form-group">
+
+                            <label for="feedbackType">Feedback Category *</label>
+
+                            <select id="feedbackType"
+                                    name="feedbackType"
+                                    required>
+
+                                <option value="">Select a category</option>
+                                <option value="SUGGESTION">Feature Suggestion</option>
+                                <option value="BUG">Bug / Issue</option>
+                                <option value="GENERAL">General Feedback</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Rate Your Experience (Optional)</label>
+
+                            <div class="rating-options">
+
+                                <label class="rating-option">
+                                    <input type="radio" name="rating" value="1">
+                                    <span>1</span>
+                                </label>
+
+                                <label class="rating-option">
+                                    <input type="radio" name="rating" value="2">
+                                    <span>2</span>
+                                </label>
+
+                                <label class="rating-option">
+                                    <input type="radio" name="rating" value="3">
+                                    <span>3</span>
+                                </label>
+
+                                <label class="rating-option">
+                                    <input type="radio" name="rating" value="4">
+                                    <span>4</span>
+                                </label>
+
+                                <label class="rating-option">
+                                    <input type="radio" name="rating" value="5">
+                                    <span>5</span>
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="feedbackMessage">Your Feedback *</label>
+
+                            <textarea id="feedbackMessage"
+                                      name="message"
+                                      rows="6"
+                                      maxlength="2000"
+                                      placeholder="Share your thoughts, suggestions or issues..."
+                                      required></textarea>
+
+                        </div>
+
+                        <button type="submit"
+                                class="primary-button feedback-submit">
+                            Submit Feedback
+                        </button>
+
+                    </form>
+
+                </section>
+
+                <!-- RIGHT: Public Feedback Feed -->
+                <section class="dashboard-card feedback-card">
+
+                    <div class="feed-header">
+
+                        <h2>Community Feedback</h2>
+
+                        <select id="categoryFilter" class="feedback-filter">
+                            <option value="ALL">All Categories</option>
+                            <option value="SUGGESTION">Suggestions</option>
+                            <option value="BUG">Bugs / Issues</option>
+                            <option value="GENERAL">General</option>
+                        </select>
+
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-feedback"
+                         th:if="${#lists.isEmpty(feedbackList)}">
+
+                        <h3>No feedback yet</h3>
+
+                        <p>Be the first to share your thoughts with the community!</p>
+
+                    </div>
+
+                    <!-- Feedback Posts -->
+                    <div th:each="feedback : ${feedbackList}"
+                         class="feedback-post"
+                         th:attr="data-category=${feedback.category}">
+
+                        <div class="post-header">
+
+                            <div class="post-author">
+
+                                <div class="author-avatar"
+                                     th:text="${#strings.substring(feedback.user.username, 0, 1).toUpperCase()}">
+                                    U
+                                </div>
+
+                                <div>
+                                    <div class="author-name"
+                                         th:text="${feedback.user.username}">
+                                        Username
+                                    </div>
+
+                                    <div class="post-date"
+                                         th:text="${#temporals.format(feedback.createdAt, 'dd MMM yyyy, hh:mm a')}">
+                                        Date
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <span class="category-tag"
+                                  th:classappend="${feedback.category.name() == 'BUG' ? ' bug' : (feedback.category.name() == 'GENERAL' ? ' general' : '')}"
+                                  th:text="${feedback.category.name() == 'SUGGESTION' ? 'Suggestion' : (feedback.category.name() == 'BUG' ? 'Bug / Issue' : 'General')}">
+                                Category
+                            </span>
+
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="post-rating"
+                             th:if="${feedback.rating != null}">
+
+                            <span th:each="star : ${#numbers.sequence(1, 5)}"
+                                  th:text="${star <= feedback.rating ? '★' : '☆'}">
+                            </span>
+
+                        </div>
+
+                        <!-- Feedback Message -->
+                        <div class="post-message"
+                             th:text="${feedback.message}">
+                            Feedback message
+                        </div>
+
+                        <!-- Replies -->
+                        <div class="replies-section">
+
+                            <div class="replies-heading">
+                                Replies
+                                (<span th:text="${#lists.size(repliesByFeedback[feedback.id])}">0</span>)
+                            </div>
+
+                            <div th:each="reply : ${repliesByFeedback[feedback.id]}"
+                                 class="reply-item">
+
+                                <div class="reply-avatar"
+                                     th:text="${#strings.substring(reply.user.username, 0, 1).toUpperCase()}">
+                                    U
+                                </div>
+
+                                <div class="reply-content">
+
+                                    <div>
+                                        <span class="reply-author"
+                                              th:text="${reply.user.username}">
+                                            Username
+                                        </span>
+
+                                        <span class="reply-date"
+                                              th:text="${#temporals.format(reply.createdAt, 'dd MMM yyyy, hh:mm a')}">
+                                            Date
+                                        </span>
+                                    </div>
+
+                                    <div class="reply-message"
+                                         th:text="${reply.message}">
+                                        Reply message
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- Reply Form -->
+                            <form class="reply-form"
+                                  method="post"
+                                  th:action="@{/feedback/{id}/reply(id=${feedback.id})}">
+
+                                <textarea name="message"
+                                          rows="2"
+                                          maxlength="2000"
+                                          placeholder="Write a reply..."
+                                          required></textarea>
+
+                                <button type="submit" class="reply-button">
+                                    Reply
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const categoryFilter = document.getElementById("categoryFilter");
+        const feedbackPosts = document.querySelectorAll(".feedback-post");
+
+        categoryFilter.addEventListener("change", function () {
+
+            const selectedCategory = this.value;
+
+            feedbackPosts.forEach(function (post) {
+
+                const postCategory = post.dataset.category;
+
+                if (selectedCategory === "ALL" ||
+                    selectedCategory === postCategory) {
+
+                    post.style.display = "";
+                } else {
+                    post.style.display = "none";
+                }
+
+            });
+
+        });
+
+    });
+</script>
+
+</body>
+</html>
