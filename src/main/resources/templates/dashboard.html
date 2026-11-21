@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,6 +52,9 @@
             <a href="/prop-firm-tracker" class="nav-link">Prop Firm Tracker</a>
             <a href="/feedback" class="nav-link">Feedback</a>
             <a href="/settings" class="nav-link">Settings</a>
+            <a href="/admin" class="nav-link" th:if="${isAdmin}">
+                Admin Panel
+            </a>
         </nav>
 
     </aside>

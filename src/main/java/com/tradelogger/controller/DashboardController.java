@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.Authentication;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -23,7 +24,14 @@ public class DashboardController {
     }
 
     @GetMapping("/")
-    public String showDashboard() {
+    public String showDashboard(Model model, Authentication authentication) {
+
+        boolean isAdmin = authentication.getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+
+        model.addAttribute("isAdmin", isAdmin);
+
         return "dashboard";
     }
 

@@ -26,10 +26,16 @@ public class CustomUserDetailsService implements UserDetailsService {
                         "User not found: " + username
                 ));
 
+        String role = user.getRole();
+
+        if (role == null || role.isBlank()) {
+            role = "USER";
+        }
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .roles("USER")
+                .roles(role)
                 .build();
     }
 }
