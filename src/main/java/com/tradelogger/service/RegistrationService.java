@@ -1,4 +1,3 @@
-
 package com.tradelogger.service;
 
 import com.tradelogger.dto.RegistrationRequest;
@@ -13,9 +12,7 @@ public class RegistrationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public RegistrationService(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
+    public RegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -41,4 +38,28 @@ public class RegistrationService {
 
         return userRepository.save(user);
     }
+
+
+    public User registerVerifiedUser(String username, String email, String passwordHash) {
+
+        username = username.trim();
+        email = email.trim().toLowerCase();
+
+        if (userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("Username is already taken");
+        }
+
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email is already registered");
+        }
+
+        User user = new User();
+
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(passwordHash);
+
+        return userRepository.save(user);
+    }
+
 }
